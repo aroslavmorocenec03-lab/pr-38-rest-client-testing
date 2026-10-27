@@ -1,0 +1,59 @@
+Час: 2026-10-27T18:46:57.8168272+02:00
+Автоматичне виконання запитів саме з requests.http; окремо від інтерфейсу REST Client.
+
+01. listBefore — GET http://localhost:5050/postings
+HTTP 200
+Content-Type: application/json; charset=utf-8
+[{"id":1,"from":"Alice","to":"Bob","content":"Books","deliveryType":"Courier","weight":2.5,"width":30,"height":20,"depth":10,"value":50,"price":10,"createdAt":"2026-10-27T16:45:05.1431747Z"},{"id":2,"from":"Carol","to":"David","content":"Clothes","deliveryType":"Department","weight":1.2,"width":25,"height":15,"depth":10,"value":100,"price":15,"createdAt":"2026-10-27T16:45:05.1432217Z"},{"id":3,"from":"Eve","to":"Frank","content":"Gift","deliveryType":"ExpressCourier","weight":0.8,"width":15,"height":15,"depth":15,"value":75,"price":20,"createdAt":"2026-10-27T16:45:05.143222Z"}]
+PASS: listBefore
+
+02. getExisting — GET http://localhost:5050/postings/1
+HTTP 200
+Content-Type: application/json; charset=utf-8
+{"id":1,"from":"Alice","to":"Bob","content":"Books","deliveryType":"Courier","weight":2.5,"width":30,"height":20,"depth":10,"value":50,"price":10,"createdAt":"2026-10-27T16:45:05.1431747Z"}
+PASS: getExisting
+
+03. getMissing — GET http://localhost:5050/postings/999999
+HTTP 404
+PASS: getMissing
+
+04. createPosting — POST http://localhost:5050/postings
+HTTP 201
+Location: /postings/4
+Content-Type: application/json; charset=utf-8
+{"id":4,"from":"Ivan","to":"Olena","content":"Documents","deliveryType":"Department","weight":0.5,"width":20,"height":15,"depth":2,"value":100,"price":15,"createdAt":"2026-10-27T16:46:58.2606678Z"}
+PASS: createPosting
+
+05. listAfterCreate — GET http://localhost:5050/postings
+HTTP 200
+Content-Type: application/json; charset=utf-8
+[{"id":1,"from":"Alice","to":"Bob","content":"Books","deliveryType":"Courier","weight":2.5,"width":30,"height":20,"depth":10,"value":50,"price":10,"createdAt":"2026-10-27T16:45:05.1431747Z"},{"id":2,"from":"Carol","to":"David","content":"Clothes","deliveryType":"Department","weight":1.2,"width":25,"height":15,"depth":10,"value":100,"price":15,"createdAt":"2026-10-27T16:45:05.1432217Z"},{"id":3,"from":"Eve","to":"Frank","content":"Gift","deliveryType":"ExpressCourier","weight":0.8,"width":15,"height":15,"depth":15,"value":75,"price":20,"createdAt":"2026-10-27T16:45:05.143222Z"},{"id":4,"from":"Ivan","to":"Olena","content":"Documents","deliveryType":"Department","weight":0.5,"width":20,"height":15,"depth":2,"value":100,"price":15,"createdAt":"2026-10-27T16:46:58.2606678Z"}]
+PASS: listAfterCreate
+
+06. getBeforeUpdate — GET http://localhost:5050/postings/4
+HTTP 200
+Content-Type: application/json; charset=utf-8
+{"id":4,"from":"Ivan","to":"Olena","content":"Documents","deliveryType":"Department","weight":0.5,"width":20,"height":15,"depth":2,"value":100,"price":15,"createdAt":"2026-10-27T16:46:58.2606678Z"}
+PASS: getBeforeUpdate
+
+07. updatePosting — PUT http://localhost:5050/postings/4
+HTTP 200
+Content-Type: application/json; charset=utf-8
+{"id":4,"from":"Ivan","to":"Olena","content":"Documents (updated)","deliveryType":"Courier","weight":0.6,"width":20,"height":15,"depth":2,"value":120,"price":20,"createdAt":"2026-10-27T16:46:58.2606678Z"}
+PASS: updatePosting
+
+08. getAfterUpdate — GET http://localhost:5050/postings/4
+HTTP 200
+Content-Type: application/json; charset=utf-8
+{"id":4,"from":"Ivan","to":"Olena","content":"Documents (updated)","deliveryType":"Courier","weight":0.6,"width":20,"height":15,"depth":2,"value":120,"price":20,"createdAt":"2026-10-27T16:46:58.2606678Z"}
+PASS: getAfterUpdate
+
+09. deletePosting — DELETE http://localhost:5050/postings/4
+HTTP 204
+PASS: deletePosting
+
+10. getAfterDelete — GET http://localhost:5050/postings/4
+HTTP 404
+PASS: getAfterDelete
+
+Успішно: 10/10 запитів із requests.http.

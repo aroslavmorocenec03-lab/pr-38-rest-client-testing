@@ -1,0 +1,74 @@
+@baseUrl = http://localhost:5050
+
+### 01. Список перед змінами — 200, JSON-масив
+# @name listBefore
+GET {{baseUrl}}/postings
+Accept: application/json
+
+### 02. Початкове відправлення — 200
+# @name getExisting
+GET {{baseUrl}}/postings/1
+Accept: application/json
+
+### 03. Неіснуючий Id — 404
+# @name getMissing
+GET {{baseUrl}}/postings/999999
+
+### 04. Створити відправлення — 201 та Location
+# @name createPosting
+POST {{baseUrl}}/postings
+Content-Type: application/json
+
+{
+  "from": "Ivan",
+  "to": "Olena",
+  "content": "Documents",
+  "deliveryType": "Department",
+  "weight": 0.5,
+  "width": 20,
+  "height": 15,
+  "depth": 2,
+  "value": 100,
+  "price": 15
+}
+
+### 05. Список після POST: містить новий запис — 200
+# @name listAfterCreate
+GET {{baseUrl}}/postings
+Accept: application/json
+
+### 06. Створений запис до зміни — 200
+# @name getBeforeUpdate
+GET {{baseUrl}}/postings/{{createPosting.response.body.$.id}}
+Accept: application/json
+
+### 07. Оновити той самий запис — 200
+# @name updatePosting
+PUT {{baseUrl}}/postings/{{createPosting.response.body.$.id}}
+Content-Type: application/json
+
+{
+  "from": "Ivan",
+  "to": "Olena",
+  "content": "Documents (updated)",
+  "deliveryType": "Courier",
+  "weight": 0.6,
+  "width": 20,
+  "height": 15,
+  "depth": 2,
+  "value": 120,
+  "price": 20
+}
+
+### 08. Повторний GET підтверджує збережене оновлення — 200
+# @name getAfterUpdate
+GET {{baseUrl}}/postings/{{createPosting.response.body.$.id}}
+Accept: application/json
+
+### 09. Видалити той самий запис — 204 без тіла
+# @name deletePosting
+DELETE {{baseUrl}}/postings/{{createPosting.response.body.$.id}}
+
+### 10. GET після видалення — 404
+# @name getAfterDelete
+GET {{baseUrl}}/postings/{{createPosting.response.body.$.id}}
